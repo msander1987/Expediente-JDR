@@ -17,8 +17,10 @@ class Expediente {
     private bool $confidencial;
     private bool $interno;
     private EstadoExpediente $estado;
+    private Oficina $oficinaOrigen;
     private Oficina $oficinaActual;
     private Gestionante $gestionante;
+    private Usuario $usuarioCreador;
     private array $movimientos;
     private array $destinos;
 
@@ -32,34 +34,31 @@ class Expediente {
         string $descripcion,
         bool $interno,
         Oficina $oficinaActual,
-        Gestionante $gestionante
+        Gestionante $gestionante,
+        EstadoExpediente $estadoInicial,
+        Usuario $usuarioCreador
     ): self {
 
         $expediente = new self();
 
-        $expediente->numero = $numero; // <-- Asignado
+        $expediente->numero = $numero;
         $expediente->descripcion = $descripcion;
         $expediente->fechaIngreso = new DateTime();
         $expediente->reservado = false;
         $expediente->confidencial = false;
         $expediente->interno = $interno;
-        $expediente->estado = $expediente->estadoInicial(); // Estado inicial "EN_TRAMITE"
+        $expediente->estado = $estadoInicial;
         $expediente->oficinaActual = $oficinaActual;
+        $expediente->oficinaOrigen = $oficinaActual;
         $expediente->gestionante = $gestionante;
         $expediente->movimientos = [];
         $expediente->destinos = [];
+        $expediente->usuarioCreador = $usuarioCreador;
 
         return $expediente;
     }
 
-    // Método "stub" temporal
-    private function estadoInicial(): EstadoExpediente
-    {
 
-        //TODO: Definir el estado inicial trayéndolo de la base de datos
-        // Por ahora, se crea un estado temporal
-        return EstadoExpediente::crearTemporal(1, 'EN_TRAMITE');
-    }
 
     // GETTERS
     public function getId(): ?int
@@ -101,11 +100,18 @@ class Expediente {
     {
         return $this->oficinaActual;
     }
+    public function getOficinaOrigen(): Oficina
+    {
+        return $this->oficinaOrigen;
+    }
     public function getGestionante(): Gestionante
     {
         return $this->gestionante;
     }
-
+    public function getUsuarioCreador(): Usuario
+    {
+        return $this->usuarioCreador;
+    }
     public function getMovimientos(): array
     {
         return $this->movimientos;

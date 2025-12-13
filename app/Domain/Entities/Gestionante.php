@@ -7,10 +7,11 @@ class Gestionante
 
     private ?int $id = null;
     private string $nombre;
-    private string $cedula;
+    private ?string $apellido;
+    private string $identificador;
     private ?string $domicilio;
     private ?string $email;
-    private ?int $telefono;
+    private string $telefono;
     private CategoriaGestionante $categoria;
 
 
@@ -19,17 +20,19 @@ class Gestionante
 
     public static function crear(
         string $nombre,
-        string $cedula,
-        ?string $domicilio = null,
-        ?string $email = null,
-        ?int $telefono = null,
+        string $identificador,
+        ?string $email=null,
+        string $telefono,
         CategoriaGestionante $categoria,
+        ?string $apellido = null,
+        ?string $domicilio = null
     ): self {
         $gestionante = new self();
 
         $gestionante->nombre = $nombre;
-        $gestionante->cedula = $cedula;
+        $gestionante->identificador = $identificador;
         $gestionante->categoria = $categoria;
+        $gestionante->apellido = $apellido;
         $gestionante->domicilio = $domicilio;
         $gestionante->email = $email;
         $gestionante->telefono = $telefono;
@@ -48,10 +51,14 @@ class Gestionante
     {
         return $this->nombre;
     }
-
-    public function getCedula(): string
+    public function getApellido(): ?string
     {
-        return $this->cedula;
+        return $this->apellido;
+    }
+
+    public function getIdentificador(): string
+    {
+        return $this->identificador;
     }
 
     public function getDomicilio(): ?string
@@ -64,7 +71,7 @@ class Gestionante
         return $this->email;
     }
 
-    public function getTelefono(): ?int
+    public function getTelefono(): string
     {
         return $this->telefono;
     }

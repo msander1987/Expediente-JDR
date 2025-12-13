@@ -14,5 +14,5 @@ interface ExpedienteRepositoryInterface
 
     public function buscar(array $filtros): array;
 
-    public function obtenerSiguienteNumero(int $anio): int;
+    public function obtenerUltimoNumero(): ?string; //BUSCAMOS EL NUMERO DEL EXPEDIENTE DEL ID MAYOR (ULTIMO CREADO)
 }
