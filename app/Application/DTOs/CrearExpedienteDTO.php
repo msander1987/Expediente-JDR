@@ -22,8 +22,8 @@ readonly class CrearExpedienteDTO
         public string $descripcion,
         public bool $esInterno,
         // Pedimos QUIÉN lo crea, no DÓNDE, para saber la oficina origen.
-        // El servicio deducirá el "dónde" a partir del id usuario.
-        public int $idUsuarioGenerador, //será el usuario logueado
+        // El servicio deducirá el "dónde" a partir del id del usuario creador.
+        public int $idUsuarioCreador, //será el usuario logueado
         public int $idGestionante
     ) {}
 }

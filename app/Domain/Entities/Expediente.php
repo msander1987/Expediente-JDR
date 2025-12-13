@@ -20,7 +20,7 @@ class Expediente {
     private Oficina $oficinaOrigen;
     private Oficina $oficinaActual;
     private Gestionante $gestionante;
-    private Usuario $usuarioGenerador;
+    private Usuario $usuarioCreador;
     private array $movimientos;
     private array $destinos;
 
@@ -36,7 +36,7 @@ class Expediente {
         Oficina $oficinaActual,
         Gestionante $gestionante,
         EstadoExpediente $estadoInicial,
-        Usuario $usuarioGenerador
+        Usuario $usuarioCreador
     ): self {
 
         $expediente = new self();
@@ -53,7 +53,7 @@ class Expediente {
         $expediente->gestionante = $gestionante;
         $expediente->movimientos = [];
         $expediente->destinos = [];
-        $expediente->usuarioGenerador = $usuarioGenerador;
+        $expediente->usuarioCreador = $usuarioCreador;
 
         return $expediente;
     }
@@ -108,9 +108,9 @@ class Expediente {
     {
         return $this->gestionante;
     }
-    public function getUsuarioGenerador(): Usuario
+    public function getUsuarioCreador(): Usuario
     {
-        return $this->usuarioGenerador;
+        return $this->usuarioCreador;
     }
     public function getMovimientos(): array
     {

@@ -30,16 +30,16 @@ class Usuario extends Authenticatable
     //Cualquier otro campo que venga en el formulario será ignorado y descartado.
     protected $fillable = [
 
-        'cedula', 
+        'cedula',
         'password',
-        'nombre', 
-        'apellido',  
-        'email',      
-        'firma',      
-        'oficina_id', 
-        'role_id', 
+        'nombre',
+        'apellido',
+        'email',
+        'firma',
+        'oficina_id',
+        'role_id',
         'activo'
-        
+
     ];
 
     // Ocultar el password o el token de sesión para que no salgan en respuestas JSON por API y terminen expuestos
@@ -77,4 +77,36 @@ class Usuario extends Authenticatable
         ->Sabe que su "nombre de usuario" es la cédula.
     
     */
+
+        //Relaciones
+
+    // Un usuario pertenece a una oficina
+    public function oficina()
+    {
+        return $this->belongsTo(Oficina::class, 'oficina_id');
+    }
+
+
+    //Un usuario tiene un rol
+
+    public function rol()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    // Un usuario puede generar/crear muchos expedientes.
+
+
+    public function expedientesCreados()
+    {
+        return $this->hasMany(Expediente::class, 'usuario_creador_id');
+    }
+
+
+    // Un usuario puede estar asociado a muchos movimientos
+
+    public function movimientos()
+    {
+        return $this->hasMany(Movimiento::class, 'funcionario_id');
+    }
 }

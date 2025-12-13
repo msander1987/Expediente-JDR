@@ -40,12 +40,12 @@ class ExpedienteService
 
 
 
-        //Me traigo el usuario logueado
-        $usuarioLogueado = $this->usuarioRepo->buscarPorId($dto->idUsuarioGenerador);
+        //Me traigo el usuario creador (logueado)
+        $usuarioLogueado = $this->usuarioRepo->buscarPorId($dto->idUsuarioCreador);
 
         if ($usuarioLogueado == null) {
 
-            throw new Exception("No se ha encontrado al usuario logueado");
+            throw new Exception("No se ha encontrado al usuario creador");
         }
 
         //Obtengo la oficinaActual del usuario
@@ -118,12 +118,12 @@ class ExpedienteService
             /* Extraer el número secuencial y el año del último número
             => explode('/', $ultimoNumero): Divide el string $ultimoNumero usando el carácter "/" como separador 
             y devuelve un array.
-            => [$secuencial, $anio] = ...: Asigna cada elemento del array resultante a variables individuales
+            => [$secuencial, $anho] = ...: Asigna cada elemento del array resultante a variables individuales
             en una sola línea (destructuring de arrays)*/
 
-            [$secuencialUltimo, $anio] = explode('/', $ultimoNumeroString);
+            [$secuencialUltimo, $anho] = explode('/', $ultimoNumeroString);
 
-            if ($anio == $anhoActual) {
+            if ($anho == $anhoActual) {
                 // Mismo año, incrementar el secuencialUltimo
                 // Si son distintos, $nuevoSecuencial se mantiene en 1.
                 $nuevoSecuencial = (int)$secuencialUltimo + 1;

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DestinoExterno extends Model
 {
-    protected $table = 'destino_externos'; // Nombre de la tabla en la base de datos
+    protected $table = 'destinos_externos'; // Nombre de la tabla en la base de datos
 
     // Configuración de campos (Seguridad)
 

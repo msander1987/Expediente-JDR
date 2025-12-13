@@ -9,7 +9,7 @@ use App\Application\DTOs\CrearExpedienteDTO;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 
-abstract class ExpedienteController extends Controller
+class ExpedienteController extends Controller
 {
 
     // Constructor:  inyectamos el ExpedienteService
@@ -31,6 +31,14 @@ abstract class ExpedienteController extends Controller
         //Auth: fachada de Laravel para autenticación
         $idUsuario = Auth::id(); //Devuelve el id del usuario logueado o null.
 
+
+        // Si el usuario no está logueado, devolvemos un error 401 Unauthorized
+        if (!$idUsuario || $idUsuario ==null) {
+            return response()->json([
+                'error' => 'Usuario no autenticado'
+            ], 401);
+        }
+
         // 3. Crear el DTO con esos datos
         //Hago asignación directa con argumentos nombrados, obteniendo los valores del array $datos
         //Casteo a los tipos estrictos de mi DTO
@@ -38,7 +46,7 @@ abstract class ExpedienteController extends Controller
         $dto = new CrearExpedienteDTO(
             descripcion: $datos['descripcion'],
             esInterno: (bool) $datos['esInterno'],
-            idUsuarioGenerador: $idUsuario,
+            idUsuarioCreador: $idUsuario,
             idGestionante: (int) $datos['idGestionante']
         );
 
