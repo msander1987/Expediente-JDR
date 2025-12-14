@@ -61,4 +61,13 @@ class Adjunto {
     {
         return $this->fechaSubida;
     }
+
+    /**
+     * Hidrata el ID de la entidad después de persistir en BD.
+     * Solo debe ser invocado por el repositorio.
+     */
+    public function asignarIdDesdeBD(int $id): void
+    {
+        $this->id = $id;
+    }
 }

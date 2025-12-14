@@ -16,7 +16,9 @@ return new class extends Migration
             $table->id(); // private ?int $id
 
             // --- ATRIBUTOS SIMPLES ---
-            $table->string('numero');       // private string $numero
+            //TODO : Agregar índice unico a 'numero' si es necesario
+            //TODO : agregar index a numeros para optimizar bùsquedas
+             $table->string('numero');       // private string $numero
             $table->text('descripcion');    // private string $descripcion
             $table->dateTime('fecha_ingreso')->useCurrent();    // private \DateTime $fechaIngreso
 

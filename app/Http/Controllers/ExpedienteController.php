@@ -27,17 +27,18 @@ class ExpedienteController extends Controller
         //Ejemplo: ['descripcion' => 'Expediente sobre asunto X', 'esInterno' => true, 'idGestionante' => 5]
         $datos = $request->validated();
 
-        // 2. Obtener el ID del usuario logueado
+        // 2. Obtener el ID del usuario logueado (Garantizado por middleware auth:sanctum)
         //Auth: fachada de Laravel para autenticación
         $idUsuario = Auth::id(); //Devuelve el id del usuario logueado o null.
 
 
-        // Si el usuario no está logueado, devolvemos un error 401 Unauthorized
+        /* Si el usuario no está logueado, devolvemos un error 401 Unauthorized
+        Con el middleware 'auth:sanctum' esto no debería pasar nunca, por eso queda comentado
         if (!$idUsuario || $idUsuario ==null) {
             return response()->json([
                 'error' => 'Usuario no autenticado'
             ], 401);
-        }
+        }*/
 
         // 3. Crear el DTO con esos datos
         //Hago asignación directa con argumentos nombrados, obteniendo los valores del array $datos
@@ -64,7 +65,9 @@ class ExpedienteController extends Controller
                 'mensaje' => 'Expediente creado con éxito',
                 'data' => [
                     'id' => $nuevoExpediente->getId(),
+                    'descripcion' => $nuevoExpediente->getDescripcion(),
                     'numero' => $nuevoExpediente->getNumero(),
+                    'fecha' => $nuevoExpediente->getFechaIngreso()->format('d-m-Y H:i')
                 ]
             ], 201); // Código 201 = Created
 

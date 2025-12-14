@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 /* NO extiende de Models
 |Extends Authenticatable (para que sea reconocido como 'user')
@@ -19,8 +20,9 @@ class Usuario extends Authenticatable
     |Notifiable: Le da al usuario la capacidad de recibir notificaciones ($usuario->notify(new NuevoExpediente())) por email, SMS o Slack.
     |SoftDeletes: Activa la "Papelera de Reciclaje". Cuando se haga  $usuario->delete(), 
     Laravel solo llenará el campo deleted_at y dejará de mostrar al usuario en las consultas, 
-    pero no lo borrará físicamente.*/
-    use HasFactory, Notifiable, SoftDeletes;
+    pero no lo borrará físicamente.
+    |HasApiTokens: Agrega métodos para crear y gestionar tokens de API con Sanctum*/
+    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
 
     // Avisa explícitamente el nombre de la tabla (opcional si se sigue convención)
     protected $table = 'usuarios';

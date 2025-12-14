@@ -26,7 +26,7 @@ class Usuario
         string $password,
         string $email,
         Oficina $oficina,
-        string $firma,
+        ?string $firma,
         Rol $rol
     ): self {
         $usuario = new self();
@@ -92,5 +92,14 @@ class Usuario
     public function getRol(): Rol
     {
         return $this->rol;
+    }
+
+    /**
+     * Hidrata el ID de la entidad después de persistir en BD.
+     * Solo debe ser invocado por el repositorio.
+     */
+    public function asignarIdDesdeBD(int $id): void
+    {
+        $this->id = $id;
     }
 }
