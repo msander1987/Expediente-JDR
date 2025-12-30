@@ -8,6 +8,7 @@ use App\Domain\Repositories\ExpedienteRepositoryInterface;
 use App\Domain\Repositories\UsuarioRepositoryInterface;
 use App\Domain\Repositories\GestionanteRepositoryInterface;
 use App\Domain\Repositories\EstadoExpedienteRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
 
@@ -27,7 +28,7 @@ class ExpedienteService
     ) {}
 
     //TODO: Refactorizar a excepciones de dominio personalizadas
-    
+
     //CU-01 - Crear Expediente
 
     public function crearExpediente(CrearExpedienteDTO $dto): Expediente
@@ -39,64 +40,70 @@ class ExpedienteService
         Aquí nos enfocamos exclusivamente en validar reglas de negocio (existencia en BD, estado, etc.)*/
 
 
+        //Uso una transacción para asegurar integridad en la BD
 
-        //Me traigo el usuario creador (logueado)
-        $usuarioLogueado = $this->usuarioRepo->buscarPorId($dto->idUsuarioCreador);
+        return DB::transaction(function () use ($dto) {
 
-        if ($usuarioLogueado == null) {
+            //Me traigo el usuario creador (logueado)
+            $usuarioLogueado = $this->usuarioRepo->buscarPorId($dto->idUsuarioCreador);
 
-            throw new Exception("No se ha encontrado al usuario creador");
-        }
+            if ($usuarioLogueado == null) {
 
-        //Obtengo la oficinaActual del usuario
+                throw new Exception("No se ha encontrado al usuario creador");
+            }
 
-        $oficinaActual = $usuarioLogueado->getOficina();
+            //Obtengo la oficinaActual del usuario
 
-        //Me traigo el gestionante
+            $oficinaActual = $usuarioLogueado->getOficina();
 
-        $gestionante = $this->gestionanteRepo->buscarPorId($dto->idGestionante);
+            if ($oficinaActual == null) {
+                throw new Exception("El usuario creador no tiene una oficina asignada para iniciar expedientes.");
+            }
 
-        if ($gestionante == null) {
+            //Me traigo el gestionante
 
-            throw new Exception("No se ha encontrado el gestionante seleccionado");
-        }
+            $gestionante = $this->gestionanteRepo->buscarPorId($dto->idGestionante);
 
+            if ($gestionante == null) {
 
-        //Me traigo el estado inicial (será siempre EN_TRAMITE)
-
-        $estadoInicial = $this->estadoRepo->buscarEstadoInicial();
-
-        if ($estadoInicial == null) {
-
-            throw new Exception("Error crítico: No se encuentra el estado inicial 'EN TRAMITE' en el sistema.");
-        }
+                throw new Exception("No se ha encontrado el gestionante seleccionado");
+            }
 
 
-        //Genero el número de expediente
+            //Me traigo el estado inicial (será siempre EN_TRAMITE)
 
-        $numeroExpediente = $this->generarNumeroExpediente();
+            $estadoInicial = $this->estadoRepo->buscarEstadoInicial();
 
-        //Creo el expediente
+            if ($estadoInicial == null) {
 
-        $expedienteCreado = Expediente::crear(
-            $numeroExpediente,
-            $dto->descripcion,
-            $dto->esInterno,
-            $oficinaActual,
-            $gestionante,
-            $estadoInicial,
-            $usuarioLogueado
-        );
+                throw new Exception("Error crítico: No se encuentra el estado inicial 'EN TRAMITE' en el sistema.");
+            }
 
-   
 
-        //lo guardo en la BD
+            //Genero el número de expediente
 
-        $this->expedienteRepo->guardar($expedienteCreado);
+            $numeroExpediente = $this->generarNumeroExpediente();
 
-        //retorno el nuevo expediente creado
+            //Creo el expediente
 
-        return $expedienteCreado;
+            $expedienteCreado = Expediente::crear(
+                $numeroExpediente,
+                $dto->descripcion,
+                $dto->esInterno,
+                $oficinaActual,
+                $gestionante,
+                $estadoInicial,
+                $usuarioLogueado
+            );
+
+            //lo guardo en la BD
+
+            $this->expedienteRepo->guardar($expedienteCreado);
+
+            //retorno el nuevo expediente creado
+
+            return $expedienteCreado;
+        });
     }
 
 
@@ -123,18 +130,20 @@ class ExpedienteService
 
             [$secuencialUltimo, $anho] = explode('/', $ultimoNumeroString);
 
-            if ($anho == $anhoActual) {
+            if (trim($anho) == $anhoActual) {
                 // Mismo año, incrementar el secuencialUltimo
                 // Si son distintos, $nuevoSecuencial se mantiene en 1.
                 $nuevoSecuencial = (int)$secuencialUltimo + 1;
             }
         }
 
-        $numeroExpediente = $nuevoSecuencial . '/' . $anhoActual;
+        // Formatear el secuencial con ceros a la izquierda ("0001/2025")
+
+        $secuencialFormateado = str_pad((string)$nuevoSecuencial, 4, '0', STR_PAD_LEFT);
+
+        //Armar el formato del string para el número de expediente
+        $numeroExpediente =  $secuencialFormateado . '/' . $anhoActual;
 
         return $numeroExpediente;
     }
-
-
-
 }

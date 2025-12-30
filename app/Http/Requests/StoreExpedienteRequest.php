@@ -1,6 +1,6 @@
 <?php
 
-//ESta clase se ha generado ejecutando en terminal el comando:
+//Esta clase se ha generado ejecutando en terminal el comando:
 //php artisan make:request StoreExpedienteRequest
 
 namespace App\Http\Requests;

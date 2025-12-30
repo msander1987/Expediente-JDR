@@ -18,15 +18,6 @@ class EstadoExpediente
         return $estado;
     }
 
-    // Factory temporal
-    // TODO: Borrar este método cuando exista el repositorio de estados
-    public static function crearTemporal(int $id, string $nombre): self
-    {
-        $estado = new self();
-        $estado->id = $id;      // Acceso permitido por estar dentro de la clase
-        $estado->nombre = $nombre;
-        return $estado;
-    }
 
     // GETTERS
     public function getId(): ?int
@@ -37,5 +28,14 @@ class EstadoExpediente
     public function getNombre(): string
     {
         return $this->nombre;
+    }
+
+    /**
+     * Hidrata el ID de la entidad después de persistir en BD.
+     * Solo debe ser invocado por el repositorio.
+     */
+    public function asignarIdDesdeBD(int $id): void
+    {
+        $this->id = $id;
     }
 }
